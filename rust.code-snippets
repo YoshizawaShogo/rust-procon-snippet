@@ -1,0 +1,233 @@
+{
+  "BOUND_SEARCH": {
+    "prefix": "BOUND_SEARCH",
+    "body": [
+      "fn bound_search<T>(mut met: T, mut violated: T, f: impl Fn(T) -> bool) -> T",
+      "where",
+      "    T: Copy",
+      "        + std::ops::Add<Output = T>",
+      "        + std::ops::Div<Output = T>",
+      "        + std::ops::Sub<Output = T>",
+      "        + PartialOrd",
+      "        + From<u8>,",
+      "{",
+      "    debug_assert!(f(met));",
+      "    debug_assert!(!f(violated));",
+      "    let two = T::from(2);",
+      "    while (met > violated && met - violated >= two) || (violated > met && violated - met >= two) {",
+      "        let mid = (met + violated) / two;",
+      "        if f(mid) {",
+      "            met = mid;",
+      "        } else {",
+      "            violated = mid;",
+      "        }",
+      "    }",
+      "    met",
+      "}"
+    ]
+  },
+  "BOUND_SEARCH_in_ARRAY": {
+    "prefix": "BOUND_SEARCH_in_ARRAY",
+    "body": [
+      "fn bound_search_in_array<T: Clone>(",
+      "    mut met: usize,",
+      "    mut violated: usize,",
+      "    array: &[T],",
+      "    f: impl Fn(T) -> bool,",
+      ") -> usize {",
+      "    debug_assert!(array.get(met).is_some());",
+      "    debug_assert!(f(array[met].clone()));",
+      "    debug_assert!(array.get(violated).is_none() || !f(array[violated].clone()));",
+      "    while met + 2 <= violated || violated + 2 <= met {",
+      "        let mid = (met + violated) / 2;",
+      "        let mid_value = array[mid].clone();",
+      "        if f(mid_value) {",
+      "            met = mid;",
+      "        } else {",
+      "            violated = mid;",
+      "        }",
+      "    }",
+      "    met",
+      "}"
+    ]
+  },
+  "GCD": {
+    "prefix": "GCD",
+    "body": [
+      "fn gcd<T>(mut a: T, mut b: T) -> T",
+      "where",
+      "    T: Copy + PartialEq + std::ops::Rem<Output = T> + std::ops::Sub<Output = T> + From<u8>,",
+      "{",
+      "    let zero: T = 0.into();",
+      "    while b != zero {",
+      "        (a, b) = (b, a % b);",
+      "    }",
+      "    a",
+      "}"
+    ]
+  },
+  "GRAPH_DISTANCE_WITHOUT_WEIGHT": {
+    "prefix": "GRAPH_DISTANCE_WITHOUT_WEIGHT",
+    "body": [
+      "fn graph_distance_without_weight_from(",
+      "    graph: Vec<Vec<usize>>,",
+      "    start_node: usize,",
+      ") -> Vec<Option<usize>> {",
+      "    let node_num = graph.len();",
+      "    let mut distances = vec![None; node_num];",
+      "    distances[start_node] = Some(0);",
+      "    let mut schedules = vec![start_node];",
+      "    while let Some(here) = schedules.pop() {",
+      "        let here_distance = distances[here].unwrap();",
+      "        let next_distance = Some(here_distance + 1);",
+      "        for &next_node in graph[here].iter() {",
+      "            if distances[next_node].is_none() {",
+      "                distances[next_node] = next_distance;",
+      "                schedules.push(next_node);",
+      "            }",
+      "        }",
+      "    }",
+      "    distances",
+      "}"
+    ]
+  },
+  "GRAPH_DISTANCE_WITH_WEIGHT": {
+    "prefix": "GRAPH_DISTANCE_WITH_WEIGHT",
+    "body": [
+      "fn graph_distance_with_weight_from(",
+      "    graph_to_weight: Vec<Vec<(usize, isize)>>,",
+      "    start_node: usize,",
+      ") -> Option<Vec<Option<isize>>> {",
+      "    use std::collections::BinaryHeap;",
+      "    let node_num = graph_to_weight.len();",
+      "    let mut distances = vec![None; node_num];",
+      "    let mut schedules = BinaryHeap::new();",
+      "    schedules.push((0 as isize, start_node));",
+      "    while let Some(here) = schedules.pop() {",
+      "        let here_distance_candidate = here.0;",
+      "        let here_node = here.1;",
+      "        if distances[here_node].is_none() {",
+      "            let here_distance = here_distance_candidate;",
+      "            distances[here_node] = Some(here_distance);",
+      "            for &(next_node, weight) in graph_to_weight[here_node].iter() {",
+      "                if distances[next_node].is_none() {",
+      "                    let next_distance = here_distance as isize + weight;",
+      "                    schedules.push((next_distance, next_node))",
+      "                }",
+      "            }",
+      "        }",
+      "    }",
+      "    for (from, to_weight_list) in graph_to_weight.iter().enumerate() {",
+      "        let from_distamce = if let Some(x) = distances[from] {",
+      "            x",
+      "        } else {",
+      "            continue;",
+      "        };",
+      "        for &(to, weight) in to_weight_list {",
+      "            let to_distance = if let Some(x) = distances[to] {",
+      "                x",
+      "            } else {",
+      "                continue;",
+      "            };",
+      "            let d = to_distance - from_distamce;",
+      "            if d > weight {",
+      "                return None;",
+      "            }",
+      "        }",
+      "    }",
+      "    Some(distances)",
+      "}"
+    ]
+  },
+  "IS_PRIME": {
+    "prefix": "IS_PRIME",
+    "body": [
+      "pub fn is_prime(num: usize) -> bool {",
+      "    let end = (num as f64).sqrt().floor() as usize;",
+      "    for i in 2..=end {",
+      "        if num % i == 0 {",
+      "            return false;",
+      "        }",
+      "    }",
+      "    true",
+      "}"
+    ]
+  },
+  "MOD_INV": {
+    "prefix": "MOD_INV",
+    "body": [
+      "fn mod_inv(divisor: usize, modulus: usize) -> usize {",
+      "    let mut a = divisor;",
+      "    let mut b = modulus;",
+      "    let mut inv: isize = 1;",
+      "    let mut x: isize = 0;",
+      "    while b != 0 {",
+      "        (inv, x) = (x, inv - (a / b) as isize * x);",
+      "        (a, b) = (b, a % b);",
+      "    }",
+      "    if inv < 0 {",
+      "        (inv + modulus as isize) as usize",
+      "    } else {",
+      "        inv as usize",
+      "    }",
+      "}"
+    ]
+  },
+  "No": {
+    "prefix": "No",
+    "body": [
+      "println!(\"No\");"
+    ]
+  },
+  "PRIMES_UNDER": {
+    "prefix": "PRIMES_UNDER",
+    "body": [
+      "pub fn primes_under(num: usize) -> Vec<usize> {",
+      "    let mut may_be_prime_list = vec![true; num + 1];",
+      "    may_be_prime_list[0] = false;",
+      "    may_be_prime_list[1] = false;",
+      "    let end = (num as f64).sqrt().floor() as usize;",
+      "    for i in 2..=end {",
+      "        if may_be_prime_list[i] {",
+      "            let mut target = i + i;",
+      "            while target <= num {",
+      "                may_be_prime_list[target] = false;",
+      "                target += i;",
+      "            }",
+      "        }",
+      "    }",
+      "    may_be_prime_list",
+      "        .into_iter()",
+      "        .enumerate()",
+      "        .filter(|&(_, flag)| flag)",
+      "        .map(|(index, _)| index)",
+      "        .collect()",
+      "}"
+    ]
+  },
+  "PRIME_FACTORIZATION": {
+    "prefix": "PRIME_FACTORIZATION",
+    "body": [
+      "pub fn prime_factorization(mut num: usize) -> Vec<usize> {",
+      "    let end = (num as f64).sqrt().floor() as usize;",
+      "    let mut primes = Vec::new();",
+      "    for i in 2..=end {",
+      "        while num % i == 0 {",
+      "            primes.push(i);",
+      "            num /= i;",
+      "        }",
+      "    }",
+      "    if primes.len() == 0 {",
+      "        primes.push(num);",
+      "    }",
+      "    primes",
+      "}"
+    ]
+  },
+  "Yes": {
+    "prefix": "Yes",
+    "body": [
+      "println!(\"Yes\");"
+    ]
+  }
+}
