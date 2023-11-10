@@ -1,6 +1,63 @@
 use cargo_snippet::snippet;
 
-#[snippet("MOD_INV")]
+#[snippet("mod_int")]
+#[derive(Clone)]
+struct ModInt {
+    value: usize,
+    modulus: usize,
+    inv_div: std::collections::HashMap<usize, usize>,
+}
+
+#[snippet("mod_int")]
+impl ModInt {
+    fn new(modulus: usize, init: usize) -> Self {
+        Self {
+            value: init,
+            modulus: modulus,
+            inv_div: std::collections::HashMap::new(),
+        }
+    }
+    #[allow(unused)]
+    fn add(mut self, n: usize) -> Self {
+        let n = n % self.modulus;
+        self.value += n;
+        self.value %= self.modulus;
+        self
+    }
+    #[allow(unused)]
+    fn sub(mut self, n: usize) -> Self {
+        let n = n % self.modulus;
+        if self.value < n {
+            self.value += self.modulus - n;
+        } else {
+            self.value -= n;
+        }
+        self
+    }
+    #[allow(unused)]
+    fn mul(mut self, n: usize) -> Self {
+        let n = n % self.modulus;
+        self.value *= n;
+        self.value %= self.modulus;
+        self
+    }
+    #[allow(unused)]
+    fn div(mut self, n: usize) -> Self {
+        let n = n % self.modulus;
+        let inv_n = if let Some(inv_n) = self.inv_div.get(&n) {
+            *inv_n
+        } else {
+            let inv_n = mod_inv(n, self.modulus);
+            self.inv_div.insert(n, inv_n);
+            inv_n
+        };
+        self.value *= inv_n;
+        self.value %= self.modulus;
+        self
+    }
+}
+
+#[snippet("mod_int")]
 fn mod_inv(divisor: usize, modulus: usize) -> usize {
     // 1/d ≡ inv (mod m)
     // 拡張ユークリッドの互除法

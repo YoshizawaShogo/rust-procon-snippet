@@ -1,6 +1,6 @@
 use cargo_snippet::snippet;
 
-#[snippet("GRAPH_DISTANCE_WITHOUT_WEIGHT")]
+#[snippet("graph_distance_without_weight")]
 fn graph_distance_without_weight_from(
     graph: Vec<Vec<usize>>,
     start_node: usize,
@@ -26,7 +26,7 @@ fn graph_distance_without_weight_from(
     distances
 }
 
-#[snippet("GRAPH_DISTANCE_WITH_WEIGHT")]
+#[snippet("graph_distance_with_weight")]
 fn graph_distance_with_weight_from(
     graph_to_weight: Vec<Vec<(usize, isize)>>,
     start_node: usize,

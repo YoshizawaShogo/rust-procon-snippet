@@ -1,7 +1,7 @@
 use cargo_snippet::snippet;
 
-#[snippet("Yes")]
+#[snippet("yes")]
 println!("Yes");
 
-#[snippet("No")]
+#[snippet("no")]
 println!("No");
