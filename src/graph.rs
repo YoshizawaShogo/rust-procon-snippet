@@ -36,16 +36,17 @@ fn graph_distance_with_weight_from(
     // 予定をheapに書き出す。
     // heapから読みだしたときに、対象nodeのdistanceがnoneであれば、ようやくそのnodeの距離が確定する
 
+    use std::cmp::Reverse;
     use std::collections::BinaryHeap;
 
     let node_num = graph_to_weight.len();
     let mut distances = vec![None; node_num];
 
     let mut schedules = BinaryHeap::new();
-    schedules.push((0 as isize, start_node));
+    schedules.push((Reverse(0), start_node));
 
     while let Some(here) = schedules.pop() {
-        let here_distance_candidate = here.0;
+        let here_distance_candidate = here.0 .0;
         let here_node = here.1;
 
         if distances[here_node].is_none() {
@@ -54,7 +55,7 @@ fn graph_distance_with_weight_from(
             for &(next_node, weight) in graph_to_weight[here_node].iter() {
                 if distances[next_node].is_none() {
                     let next_distance = here_distance as isize + weight;
-                    schedules.push((next_distance, next_node))
+                    schedules.push((Reverse(next_distance), next_node))
                 }
             }
         }

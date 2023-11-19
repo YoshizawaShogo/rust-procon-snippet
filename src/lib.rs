@@ -2,7 +2,8 @@
 mod bound_search;
 mod gcd;
 mod graph;
+mod lazy_segment_tree;
 mod mod_inv;
 mod prime;
+mod union_find;
 mod util;
-mod lazy_segment_tree;

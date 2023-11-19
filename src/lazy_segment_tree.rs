@@ -100,7 +100,7 @@ impl LazySegmentTree {
             i *= 2;
         }
         let n = 2 * i - 1;
-        let mut data = vec![None; n-i];
+        let mut data = vec![None; n - i];
         data.append(&mut vec![Some(identity_element()); i]);
 
         LazySegmentTree {
@@ -135,8 +135,10 @@ impl LazySegmentTree {
                     self.lazy[current_i] = None;
 
                     if current_range.len() != 1 {
-                        self.lazy[current_i * 2 + 1] = merge_lazy(self.lazy[current_i * 2 + 1], Some(lazy_sum));
-                        self.lazy[current_i * 2 + 2] = merge_lazy(self.lazy[current_i * 2 + 2], Some(lazy_sum));
+                        self.lazy[current_i * 2 + 1] =
+                            merge_lazy(self.lazy[current_i * 2 + 1], Some(lazy_sum));
+                        self.lazy[current_i * 2 + 2] =
+                            merge_lazy(self.lazy[current_i * 2 + 2], Some(lazy_sum));
                     }
                 }
                 return self.data[current_i];
@@ -178,7 +180,7 @@ impl LazySegmentTree {
         current_range: Range,
     ) {
         let lazy_sum = merge_lazy(self.lazy[current_i], propagated);
-        
+
         if target.excludes(&current_range) {
             self.lazy[current_i] = lazy_sum;
             return;
