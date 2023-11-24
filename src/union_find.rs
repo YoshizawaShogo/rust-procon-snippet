@@ -52,8 +52,9 @@ impl UnionFind {
         r1 == r2
     }
     fn is_valid(&mut self, n1: usize, n2: usize, w: isize) -> bool {
-        let (_r1, w1) = self.root(n1);
-        let (_r2, w2) = self.root(n2);
+        let (r1, w1) = self.root(n1);
+        let (r2, w2) = self.root(n2);
+        debug_assert!(r1 == r2);
         w2 - w1 == w
     }
 }
