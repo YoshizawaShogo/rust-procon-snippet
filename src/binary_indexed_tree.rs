@@ -1,17 +1,14 @@
 use cargo_snippet::snippet;
 
-#[snippet("binary_indexed_tree")]
-use std::fmt::Debug;
 
 #[snippet("binary_indexed_tree")]
-#[derive(Debug)]
 struct BinaryIndexedTree<A>(Vec<A>)
 where
-    A: Sized + std::ops::AddAssign + Clone + Debug + Default;
+    A: Sized + std::ops::AddAssign + Clone + Default;
 
 impl<A> FromIterator<A> for BinaryIndexedTree<A>
 where
-    A: Sized + std::ops::AddAssign + Clone + Debug + Default,
+    A: Sized + std::ops::AddAssign + Clone + Default,
 {
     fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self {
         Self(Vec::from_iter(iter))
@@ -21,7 +18,7 @@ where
 #[snippet("binary_indexed_tree")]
 impl<A> BinaryIndexedTree<A>
 where
-    A: Sized + std::ops::AddAssign + Clone + Debug + Default,
+    A: Sized + std::ops::AddAssign + Clone + Default,
 {
     fn add(&mut self, mut i: usize, addend: A) {
         debug_assert!(i < self.0.len());
