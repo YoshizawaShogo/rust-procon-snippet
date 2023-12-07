@@ -7,3 +7,4 @@ mod mod_inv;
 mod prime;
 mod union_find;
 mod util;
+mod binary_indexed_tree;

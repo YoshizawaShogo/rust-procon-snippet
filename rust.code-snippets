@@ -58,6 +58,42 @@
       "}"
     ]
   },
+  "binary_indexed_tree": {
+    "prefix": "binary_indexed_tree",
+    "body": [
+      "use std::fmt::Debug;",
+      "#[derive(Debug)]",
+      "struct BinaryIndexedTree<A>(Vec<A>)",
+      "where",
+      "    A: Sized + std::ops::AddAssign + Clone + Debug + Default;",
+      "impl<A> BinaryIndexedTree<A>",
+      "where",
+      "    A: Sized + std::ops::AddAssign + Clone + Debug + Default,",
+      "{",
+      "    fn add(&mut self, mut i: usize, addend: A) {",
+      "        debug_assert!(i < self.0.len());",
+      "        i += 1;",
+      "        while i <= self.0.len() {",
+      "            self.0[i - 1] += addend.clone();",
+      "            i += lsb(i);",
+      "        }",
+      "    }",
+      "    fn sum(&self, mut i: usize) -> A {",
+      "        debug_assert!(i < self.0.len());",
+      "        let mut sum = A::default();",
+      "        i += 1;",
+      "        while i != 0 {",
+      "            sum += self.0[i - 1].clone();",
+      "            i -= lsb(i);",
+      "        }",
+      "        sum",
+      "    }",
+      "}",
+      "fn lsb(i: usize) -> usize {",
+      "    i & i.wrapping_neg()",
+      "}"
+    ]
+  },
   "bound_search": {
     "prefix": "bound_search",
     "body": [
@@ -497,8 +533,9 @@
       "        r1 == r2",
       "    }",
       "    fn is_valid(&mut self, n1: usize, n2: usize, w: isize) -> bool {",
-      "        let (_r1, w1) = self.root(n1);",
-      "        let (_r2, w2) = self.root(n2);",
+      "        let (r1, w1) = self.root(n1);",
+      "        let (r2, w2) = self.root(n2);",
+      "        debug_assert!(r1 == r2);",
       "        w2 - w1 == w",
       "    }",
       "}"
