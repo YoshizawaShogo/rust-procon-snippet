@@ -102,14 +102,12 @@ impl LazySegmentTree {
         let n = 2 * i - 1;
         let mut data = vec![None; n - i];
         data.append(&mut vec![Some(identity_element()); i]);
-
         LazySegmentTree {
             r_edge: i,
             data: data,
             lazy: vec![None; n],
         }
     }
-
     fn query(&mut self, target: &Range) -> T {
         let valid_range = Range::new(0, self.r_edge);
         debug_assert!(valid_range.contains(target));
@@ -133,7 +131,6 @@ impl LazySegmentTree {
                 if let Some(lazy_sum) = merge_lazy(lazy_value, self.lazy[current_i]) {
                     self.data[current_i] = Some(commit_lazy(data, lazy_sum));
                     self.lazy[current_i] = None;
-
                     if current_range.len() != 1 {
                         self.lazy[current_i * 2 + 1] =
                             merge_lazy(self.lazy[current_i * 2 + 1], Some(lazy_sum));
@@ -146,23 +143,23 @@ impl LazySegmentTree {
                 let lazy_sum = merge_lazy(lazy_value, self.lazy[current_i]);
                 self.lazy[current_i] = None;
 
-                let (child_l, child_r) = current_range.spilit_at_mid();
-
-                let a = self._query(target, lazy_sum, current_i * 2 + 1, child_l);
-                let b = self._query(target, lazy_sum, current_i * 2 + 2, child_r);
-
-                self.data[current_i] = merge_data(a, b);
-                return self.data[current_i];
+                if current_range.len() == 1 {
+                    self.data[current_i] = Some(commit_lazy(identity_element(), lazy_sum.unwrap()));
+                    return self.data[current_i];
+                } else {
+                    let (child_l, child_r) = current_range.spilit_at_mid();
+                    let a = self._query(target, lazy_sum, current_i * 2 + 1, child_l);
+                    let b = self._query(target, lazy_sum, current_i * 2 + 2, child_r);
+                    self.data[current_i] = merge_data(a, b);
+                    return self.data[current_i];
+                }
             }
         } else {
             let lazy_sum = merge_lazy(lazy_value, self.lazy[current_i]);
             self.lazy[current_i] = None;
-
             let (child_l, child_r) = current_range.spilit_at_mid();
-
             let a = self._query(target, lazy_sum, current_i * 2 + 1, child_l);
             let b = self._query(target, lazy_sum, current_i * 2 + 2, child_r);
-
             return merge_data(a, b);
         };
     }
@@ -180,7 +177,6 @@ impl LazySegmentTree {
         current_range: Range,
     ) {
         let lazy_sum = merge_lazy(self.lazy[current_i], propagated);
-
         if target.excludes(&current_range) {
             self.lazy[current_i] = lazy_sum;
             return;
@@ -192,7 +188,6 @@ impl LazySegmentTree {
             self.lazy[current_i] = None;
             self.data[current_i] = None;
             let (child_l, child_r) = current_range.spilit_at_mid();
-
             self._update(target, value, lazy_sum, current_i * 2 + 1, child_l);
             self._update(target, value, lazy_sum, current_i * 2 + 2, child_r);
         }
