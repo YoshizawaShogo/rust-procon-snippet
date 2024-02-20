@@ -5,7 +5,11 @@ use cargo_snippet::snippet;
 /// 拡張ユークリッドの互除法を用いた。
 /// d*inv + m*x == GCD(d, m). (xは任意の整数)
 /// Usage: let inv = mod_inv(d, m);
+/// ただし、dとmは互いに素である必要がある
 fn mod_inv(divisor: usize, modulus: usize) -> usize {
+    debug_assert_ne!(divisor, 0);
+    debug_assert_ne!(modulus, 0);
+    
     let mut a = divisor;
     let mut b = modulus;
 
@@ -16,6 +20,8 @@ fn mod_inv(divisor: usize, modulus: usize) -> usize {
         (inv, x) = (x, inv - (a / b) as isize * x);
         (a, b) = (b, a % b);
     }
+
+    debug_assert_eq!(a, 1);
 
     if inv < 0 {
         (inv + modulus as isize) as usize
